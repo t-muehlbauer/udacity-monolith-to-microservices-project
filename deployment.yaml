@@ -79,7 +79,6 @@ spec:
       containers:
       - name: frontend
         image: tmuehlba/udagram-frontend:v1
-        platform: linux/amd64
         ports:
         - containerPort: 80
         envFrom:
@@ -107,7 +106,6 @@ spec:
       containers:
       - name: reverseproxy
         image: tmuehlba/reverseproxy:v1
-        platform: linux/amd64
         ports:
         - containerPort: 8080
         envFrom:
