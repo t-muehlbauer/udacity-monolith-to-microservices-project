@@ -1,0 +1,43 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout Repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      # Log in to DockerHub
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Build Docker Images
+      - name: Build Docker Images
+        run: |
+          docker build -t udagram-api-feed ./udagram-api-feed
+          docker build -t udagram-api-user ./udagram-api-user
+          docker build -t udagram-frontend ./udagram-frontend
+          docker build -t reverseproxy ./udagram-reverseproxy
+
+      # Tag Docker Images
+      - name: Tag Docker Images
+        run: |
+          docker tag udagram-api-feed tmuehlba/udagram-api-feed:v1
+          docker tag udagram-api-user tmuehlba/udagram-api-user:v1
+          docker tag udagram-frontend tmuehlba/udagram-frontend:v1
+          docker tag reverseproxy tmuehlba/reverseproxy:v1
+
+      # Push Docker Images
+      - name: Push Docker Images
+        run: |
+          docker push tmuehlba/udagram-api-feed:v1
+          docker push tmuehlba/udagram-api-user:v1
+          docker push tmuehlba/udagram-frontend:v1
+          docker push tmuehlba/reverseproxy:v1
